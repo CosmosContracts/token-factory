@@ -169,7 +169,7 @@ replace (
 	// Use the cosmos-flavored keyring library
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.1.7-0.20210622111912-ef00f8ac3d76
 	// ibc v5 support for sdk v46
-	github.com/CosmWasm/wasmd => github.com/notional-labs/wasmd v0.30.0-sdk468
+	github.com/CosmWasm/wasmd => github.com/notional-labs/wasmd v0.30.0-sdk469
 
 	// Fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	// TODO Remove it: https://github.com/cosmos/cosmos-sdk/issues/10409

@@ -5,7 +5,7 @@ go 1.18
 require (
 	cosmossdk.io/math v1.0.0-beta.6
 	github.com/CosmWasm/wasmd v0.30.0
-	github.com/cosmos/cosmos-proto v1.0.0-alpha8
+	github.com/cosmos/cosmos-proto v1.0.0-beta.1
 	github.com/cosmos/cosmos-sdk v0.46.9
 	github.com/cosmos/ibc-go/v6 v6.1.0
 	github.com/gogo/protobuf v1.3.3
@@ -18,16 +18,16 @@ require (
 	github.com/stretchr/testify v1.8.1
 	github.com/tendermint/tendermint v0.34.26
 	github.com/tendermint/tm-db v0.6.8-0.20220506192307-f628bb5dc95b
-	google.golang.org/genproto v0.0.0-20221024183307-1bc688fe9f3e
-	google.golang.org/grpc v1.50.1
+	google.golang.org/genproto v0.0.0-20221118155620-16455021b5e6
+	google.golang.org/grpc v1.52.3
 )
 
 require (
-	cloud.google.com/go v0.104.0 // indirect
+	cloud.google.com/go v0.105.0 // indirect
 	cloud.google.com/go/compute v1.12.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.1 // indirect
-	cloud.google.com/go/iam v0.4.0 // indirect
-	cloud.google.com/go/storage v1.23.0 // indirect
+	cloud.google.com/go/iam v0.7.0 // indirect
+	cloud.google.com/go/storage v1.27.0 // indirect
 	cosmossdk.io/errors v1.0.0-beta.7 // indirect
 	github.com/aws/aws-sdk-go v1.40.45 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
@@ -35,7 +35,7 @@ require (
 	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/cockroachdb/apd/v2 v2.0.2 // indirect
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
-	github.com/cosmos/gogoproto v1.4.2 // indirect
+	github.com/cosmos/gogoproto v1.4.4 // indirect
 	github.com/cosmos/iavl v0.19.5 // indirect
 	github.com/creachadair/taskgroup v0.3.2 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
@@ -45,7 +45,6 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.6.0 // indirect
-	github.com/googleapis/go-type-adapters v1.0.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-getter v1.6.1 // indirect
 	github.com/hashicorp/go-safetemp v1.0.0 // indirect
@@ -168,8 +167,8 @@ require (
 replace (
 	// Use the cosmos-flavored keyring library
 	github.com/99designs/keyring => github.com/cosmos/keyring v1.1.7-0.20210622111912-ef00f8ac3d76
-	// ibc v5 support for sdk v46
-	github.com/CosmWasm/wasmd => github.com/notional-labs/wasmd v0.30.0-sdk469
+	// wasmd with ibc v6 support for sdk v46
+	github.com/CosmWasm/wasmd => github.com/notional-labs/wasmd v0.30.0-sdk469-second
 
 	// Fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	// TODO Remove it: https://github.com/cosmos/cosmos-sdk/issues/10409

@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"cosmossdk.io/math"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -15,8 +16,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/authz"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -93,16 +94,14 @@ func (s *KeeperTestHelper) Commit() {
 
 // FundAcc funds target address with specified amount.
 func (s *KeeperTestHelper) FundAcc(acc sdk.AccAddress, amounts sdk.Coins) {
-	// TODO:
-	// err := simapp.FundAccount(s.App.BankKeeper, s.Ctx, acc, amounts)
-	// s.Require().NoError(err)
+	err := FundAccount(s.App.BankKeeper, s.Ctx, acc, amounts)
+	s.Require().NoError(err)
 }
 
 // FundModuleAcc funds target modules with specified amount.
 func (s *KeeperTestHelper) FundModuleAcc(moduleName string, amounts sdk.Coins) {
-	// TODO:
-	// err := simapp.FundModuleAccount(s.App.BankKeeper, s.Ctx, moduleName, amounts)
-	// s.Require().NoError(err)
+	err := FundModuleAccount(s.App.BankKeeper, s.Ctx, moduleName, amounts)
+	s.Require().NoError(err)
 }
 
 func (s *KeeperTestHelper) MintCoins(coins sdk.Coins) {
@@ -120,14 +119,10 @@ func (s *KeeperTestHelper) SetupValidator(bondStatus stakingtypes.BondStatus) sd
 	s.FundAcc(sdk.AccAddress(valAddr), selfBond)
 
 	// TODO:
-	stakingHandler := staking.NewHandler(s.App.StakingKeeper)
 	stakingCoin := sdk.NewCoin(sdk.DefaultBondDenom, selfBond[0].Amount)
 	ZeroCommission := stakingtypes.NewCommissionRates(sdk.ZeroDec(), sdk.ZeroDec(), sdk.ZeroDec())
-	msg, err := stakingtypes.NewMsgCreateValidator(valAddr, valPub, stakingCoin, stakingtypes.Description{}, ZeroCommission, sdk.OneInt())
+	_, err := stakingtypes.NewMsgCreateValidator(valAddr, valPub, stakingCoin, stakingtypes.Description{}, ZeroCommission, sdk.OneInt())
 	s.Require().NoError(err)
-	res, err := stakingHandler(s.Ctx, msg)
-	s.Require().NoError(err)
-	s.Require().NotNil(res)
 
 	val, found := s.App.StakingKeeper.GetValidator(s.Ctx, valAddr)
 	s.Require().True(found)
@@ -204,7 +199,7 @@ func (s *KeeperTestHelper) EndBlock() {
 }
 
 // AllocateRewardsToValidator allocates reward tokens to a distribution module then allocates rewards to the validator address.
-func (s *KeeperTestHelper) AllocateRewardsToValidator(valAddr sdk.ValAddress, rewardAmt sdk.Int) {
+func (s *KeeperTestHelper) AllocateRewardsToValidator(valAddr sdk.ValAddress, rewardAmt math.Int) {
 	validator, found := s.App.StakingKeeper.GetValidator(s.Ctx, valAddr)
 	s.Require().True(found)
 
@@ -295,4 +290,32 @@ func GenerateTestAddrs() (string, string) {
 	validAddr := sdk.AccAddress(pk1.Address()).String()
 	invalidAddr := sdk.AccAddress("invalid").String()
 	return validAddr, invalidAddr
+}
+
+// FundAccount is a utility function that funds an account by minting and
+// sending the coins to the address. This should be used for testing purposes
+// only!
+//
+// TODO: Instead of using the mint module account, which has the
+// permission of minting, create a "faucet" account. (@fdymylja)
+func FundAccount(bankKeeper bankkeeper.Keeper, ctx sdk.Context, addr sdk.AccAddress, amounts sdk.Coins) error {
+	if err := bankKeeper.MintCoins(ctx, minttypes.ModuleName, amounts); err != nil {
+		return err
+	}
+
+	return bankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr, amounts)
+}
+
+// FundModuleAccount is a utility function that funds a module account by
+// minting and sending the coins to the address. This should be used for testing
+// purposes only!
+//
+// TODO: Instead of using the mint module account, which has the
+// permission of minting, create a "faucet" account. (@fdymylja)
+func FundModuleAccount(bankKeeper bankkeeper.Keeper, ctx sdk.Context, recipientMod string, amounts sdk.Coins) error {
+	if err := bankKeeper.MintCoins(ctx, minttypes.ModuleName, amounts); err != nil {
+		return err
+	}
+
+	return bankKeeper.SendCoinsFromModuleToModule(ctx, minttypes.ModuleName, recipientMod, amounts)
 }

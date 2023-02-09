@@ -43,6 +43,8 @@ func (suite *KeeperTestSuite) TestAdminMsgs() {
 
 	// Test Change Admin
 	_, err = suite.msgServer.ChangeAdmin(sdk.WrapSDKContext(suite.Ctx), types.NewMsgChangeAdmin(suite.TestAccs[0].String(), suite.defaultDenom, suite.TestAccs[1].String()))
+	suite.Require().NoError(err)
+
 	queryRes, err = suite.queryClient.DenomAuthorityMetadata(suite.Ctx.Context(), &types.QueryDenomAuthorityMetadataRequest{
 		Denom: suite.defaultDenom,
 	})
@@ -274,7 +276,6 @@ func (suite *KeeperTestSuite) TestChangeAdminDenom() {
 }
 
 func (suite *KeeperTestSuite) TestSetDenomMetaData() {
-
 	// setup test
 	suite.SetupTest()
 	suite.CreateDefaultDenom()

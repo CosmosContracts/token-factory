@@ -3,6 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/x/bank/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
@@ -25,6 +26,12 @@ type BankKeeper interface {
 	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
 
 	BlockedAddr(addr sdk.AccAddress) bool
+}
+
+type SendKeeper interface {
+	GetParams(ctx sdk.Context) types.Params
+	SetParams(ctx sdk.Context, params types.Params)
+	IsSendEnabledCoin(ctx sdk.Context, coin sdk.Coin) bool
 }
 
 type AccountKeeper interface {

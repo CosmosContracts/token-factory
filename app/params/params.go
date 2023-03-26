@@ -11,4 +11,5 @@ const (
 	DefaultWeightMsgChangeAdmin      int = 100
 	DefaultWeightMsgSetDenomMetadata int = 100
 	DefaultWeightMsgForceTransfer    int = 100
+	DefaultWeightMsgDisableTransfer  int = 100
 )

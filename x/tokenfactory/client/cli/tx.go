@@ -33,6 +33,7 @@ func GetTxCmd() *cobra.Command {
 		NewBurnCmd(),
 		NewBurnFromCmd(),
 		NewForceTransferCmd(),
+		NewToggleTransferCmd(),
 		NewChangeAdminCmd(),
 		NewModifyDenomMetadataCmd(),
 	)
@@ -231,6 +232,42 @@ func NewForceTransferCmd() *cobra.Command {
 				amount,
 				args[1],
 				args[2],
+			)
+
+			return tx.GenerateOrBroadcastTxWithFactory(clientCtx, txf, msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}
+
+// NewForceTransferCmd broadcast MsgDisableTransfer
+func NewToggleTransferCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "toggle-transfer [denom] [enabled_bool] [flags]",
+		Short: "Toggle transfer for a denom. Must have admin authority to do so. If disabled, no one can transfer the token. Only mint & burn",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			txf := tx.NewFactoryCLI(clientCtx, cmd.Flags()).WithTxConfig(clientCtx.TxConfig).WithAccountRetriever(clientCtx.AccountRetriever)
+
+			denom := args[0]
+
+			// parse the value
+			statusBool, err := strconv.ParseBool(args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgToggleTransfer(
+				clientCtx.GetFromAddress().String(),
+				denom,
+				statusBool,
 			)
 
 			return tx.GenerateOrBroadcastTxWithFactory(clientCtx, txf, msg)

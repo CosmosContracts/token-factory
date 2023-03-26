@@ -12,6 +12,7 @@ const (
 	TypeMsgMint             = "tf_mint"
 	TypeMsgBurn             = "tf_burn"
 	TypeMsgForceTransfer    = "force_transfer"
+	TypeMsgToggleTransfer   = "disable_send"
 	TypeMsgChangeAdmin      = "change_admin"
 	TypeMsgSetDenomMetadata = "set_denom_metadata"
 )
@@ -191,6 +192,37 @@ func (m MsgForceTransfer) GetSignBytes() []byte {
 }
 
 func (m MsgForceTransfer) GetSigners() []sdk.AccAddress {
+	sender, _ := sdk.AccAddressFromBech32(m.Sender)
+	return []sdk.AccAddress{sender}
+}
+
+var _ sdk.Msg = &MsgToggleTransfer{}
+
+// NewMsgToggleTransfer disables the sending of funds from accounts
+func NewMsgToggleTransfer(sender string, denom string, value bool) *MsgToggleTransfer {
+	return &MsgToggleTransfer{
+		Sender: sender,
+		Denom:  denom,
+		Value:  value,
+	}
+}
+
+func (m MsgToggleTransfer) Route() string { return RouterKey }
+func (m MsgToggleTransfer) Type() string  { return TypeMsgForceTransfer }
+func (m MsgToggleTransfer) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
+	}
+
+	return nil
+}
+
+func (m MsgToggleTransfer) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+}
+
+func (m MsgToggleTransfer) GetSigners() []sdk.AccAddress {
 	sender, _ := sdk.AccAddressFromBech32(m.Sender)
 	return []sdk.AccAddress{sender}
 }

@@ -17,19 +17,8 @@
 # go get github.com/regen-network/cosmos-proto@latest # doesn't work in install mode
 # go get github.com/regen-network/cosmos-proto/protoc-gen-gocosmos@v0.3.1
 
-# To run this, i had to modify the following:
-# git clone https://github.com/regen-network/cosmos-proto.git
-#
-# Modify interfacetype/interfacetype.go and comment out the following lines:
-# 
-# if len(message.OneofDecl) != 1 {
-# 	panic("interfacetype only supports messages with exactly one oneof declaration")
-# }
-# for _, field := range message.Field {
-# 	if idx := field.OneofIndex; idx == nil || *idx != 0 {
-# 		panic("all fields in interfacetype message must belong to the oneof")
-# 	}
-# }
+# To run this, it required interfacetype changes:
+# git clone https://github.com/reecepbcups/cosmos-proto.git
 #
 # then:
 # cd cosmos-proto/protoc-gen-gocosmos

@@ -255,6 +255,7 @@ type TokenApp struct {
 	// keepers
 	AccountKeeper       authkeeper.AccountKeeper
 	BankKeeper          bankkeeper.BaseKeeper
+	SendKeeper          bankkeeper.BaseSendKeeper
 	CapabilityKeeper    *capabilitykeeper.Keeper
 	StakingKeeper       stakingkeeper.Keeper
 	SlashingKeeper      slashingkeeper.Keeper
@@ -369,6 +370,15 @@ func NewWasmApp(
 		authtypes.ProtoBaseAccount,
 		maccPerms,
 	)
+
+	app.SendKeeper = bankkeeper.NewBaseSendKeeper(
+		appCodec,
+		keys[banktypes.StoreKey],
+		app.AccountKeeper,
+		app.getSubspace(banktypes.ModuleName),
+		app.ModuleAccountAddrs(),
+	)
+
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
 		appCodec,
 		keys[banktypes.StoreKey],
@@ -461,6 +471,7 @@ func NewWasmApp(
 		app.getSubspace(tokenfactorytypes.ModuleName),
 		app.AccountKeeper,
 		app.BankKeeper,
+		app.SendKeeper,
 		app.DistrKeeper,
 	)
 	app.TokenFactoryKeeper = tokenFactoryKeeper

@@ -140,6 +140,33 @@ func (server msgServer) ForceTransfer(goCtx context.Context, msg *types.MsgForce
 	return &types.MsgForceTransferResponse{}, nil
 }
 
+func (server msgServer) ToggleTransfer(goCtx context.Context, msg *types.MsgToggleTransfer) (*types.MsgToggleTransferResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	authorityMetadata, err := server.Keeper.GetAuthorityMetadata(ctx, msg.Denom)
+	if err != nil {
+		return nil, err
+	}
+
+	if msg.Sender != authorityMetadata.GetAdmin() {
+		return nil, types.ErrUnauthorized
+	}
+
+	err = server.Keeper.toggleTransfer(ctx, msg.Denom, msg.Value)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.TypeMsgToggleTransfer,
+			sdk.NewAttribute(types.AttributeDenom, msg.Denom),
+		),
+	})
+
+	return &types.MsgToggleTransferResponse{}, nil
+}
+
 func (server msgServer) ChangeAdmin(goCtx context.Context, msg *types.MsgChangeAdmin) (*types.MsgChangeAdminResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 

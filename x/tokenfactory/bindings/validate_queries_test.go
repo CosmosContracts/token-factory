@@ -68,7 +68,7 @@ func TestDenomAdmin(t *testing.T) {
 
 	// set token creation fee to zero to make testing easier
 	tfParams := app.TokenFactoryKeeper.GetParams(ctx)
-	tfParams.DenomCreationFee = sdk.NewCoins()
+	// tfParams.DenomCreationFee = sdk.NewCoins()
 	app.TokenFactoryKeeper.SetParams(ctx, tfParams)
 
 	// create a subdenom via the token factory

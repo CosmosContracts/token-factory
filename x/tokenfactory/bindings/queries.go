@@ -48,10 +48,10 @@ func (qp QueryPlugin) GetMetadata(ctx sdk.Context, denom string) (*bindingstypes
 }
 
 func (qp QueryPlugin) GetParams(ctx sdk.Context) (*bindingstypes.ParamsResponse, error) {
-	params := qp.tokenFactoryKeeper.GetParams(ctx)
+	// params := qp.tokenFactoryKeeper.GetParams(ctx)
 	return &bindingstypes.ParamsResponse{
 		Params: bindingstypes.Params{
-			DenomCreationFee: ConvertSdkCoinsToWasmCoins(params.DenomCreationFee),
+			// DenomCreationFee: ConvertSdkCoinsToWasmCoins(params.DenomCreationFee),
 		},
 	}, nil
 }

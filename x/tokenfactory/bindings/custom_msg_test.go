@@ -13,7 +13,6 @@ import (
 
 	"github.com/CosmWasm/token-factory/app"
 	bindings "github.com/CosmWasm/token-factory/x/tokenfactory/bindings/types"
-	"github.com/CosmWasm/token-factory/x/tokenfactory/types"
 )
 
 func TestCreateDenomMsg(t *testing.T) {
@@ -25,7 +24,7 @@ func TestCreateDenomMsg(t *testing.T) {
 	require.NotEmpty(t, reflect)
 
 	// Fund reflect contract with 100 base denom creation fees
-	reflectAmount := sdk.NewCoins(sdk.NewCoin(types.DefaultParams().DenomCreationFee[0].Denom, types.DefaultParams().DenomCreationFee[0].Amount.MulRaw(100)))
+	reflectAmount := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100_000_000)))
 	fundAccount(t, ctx, osmosis, reflect, reflectAmount)
 
 	msg := bindings.TokenMsg{CreateDenom: &bindings.CreateDenom{
@@ -56,7 +55,7 @@ func TestMintMsg(t *testing.T) {
 	require.NotEmpty(t, reflect)
 
 	// Fund reflect contract with 100 base denom creation fees
-	reflectAmount := sdk.NewCoins(sdk.NewCoin(types.DefaultParams().DenomCreationFee[0].Denom, types.DefaultParams().DenomCreationFee[0].Amount.MulRaw(100)))
+	reflectAmount := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100_000_000)))
 	fundAccount(t, ctx, osmosis, reflect, reflectAmount)
 
 	// lucky was broke
@@ -185,7 +184,7 @@ func TestForceTransfer(t *testing.T) {
 	require.NotEmpty(t, reflect)
 
 	// Fund reflect contract with 100 base denom creation fees
-	reflectAmount := sdk.NewCoins(sdk.NewCoin(types.DefaultParams().DenomCreationFee[0].Denom, types.DefaultParams().DenomCreationFee[0].Amount.MulRaw(100)))
+	reflectAmount := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100_000_000)))
 	fundAccount(t, ctx, osmosis, reflect, reflectAmount)
 
 	// lucky was broke
@@ -238,7 +237,7 @@ func TestBurnMsg(t *testing.T) {
 	require.NotEmpty(t, reflect)
 
 	// Fund reflect contract with 100 base denom creation fees
-	reflectAmount := sdk.NewCoins(sdk.NewCoin(types.DefaultParams().DenomCreationFee[0].Denom, types.DefaultParams().DenomCreationFee[0].Amount.MulRaw(100)))
+	reflectAmount := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100_000_000)))
 	fundAccount(t, ctx, osmosis, reflect, reflectAmount)
 
 	// lucky was broke

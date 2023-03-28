@@ -8,7 +8,6 @@ import (
 
 	wasmbinding "github.com/CosmWasm/token-factory/x/tokenfactory/bindings"
 	bindings "github.com/CosmWasm/token-factory/x/tokenfactory/bindings/types"
-	"github.com/CosmWasm/token-factory/x/tokenfactory/types"
 
 	"github.com/stretchr/testify/require"
 )
@@ -18,7 +17,7 @@ func TestCreateDenom(t *testing.T) {
 	tokenz, ctx := SetupCustomApp(t, actor)
 
 	// Fund actor with 100 base denom creation fees
-	actorAmount := sdk.NewCoins(sdk.NewCoin(types.DefaultParams().DenomCreationFee[0].Denom, types.DefaultParams().DenomCreationFee[0].Amount.MulRaw(100)))
+	actorAmount := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100_000_000)))
 	fundAccount(t, ctx, tokenz, actor, actorAmount)
 
 	specs := map[string]struct {
@@ -145,7 +144,7 @@ func TestChangeAdmin(t *testing.T) {
 			tokenz, ctx := SetupCustomApp(t, tokenCreator)
 
 			// Fund actor with 100 base denom creation fees
-			actorAmount := sdk.NewCoins(sdk.NewCoin(types.DefaultParams().DenomCreationFee[0].Denom, types.DefaultParams().DenomCreationFee[0].Amount.MulRaw(100)))
+			actorAmount := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100_000_000)))
 			fundAccount(t, ctx, tokenz, tokenCreator, actorAmount)
 
 			_, err := wasmbinding.PerformCreateDenom(&tokenz.TokenFactoryKeeper, &tokenz.BankKeeper, ctx, tokenCreator, &bindings.CreateDenom{
@@ -170,7 +169,7 @@ func TestMint(t *testing.T) {
 	tokenz, ctx := SetupCustomApp(t, creator)
 
 	// Fund actor with 100 base denom creation fees
-	tokenCreationFeeAmt := sdk.NewCoins(sdk.NewCoin(types.DefaultParams().DenomCreationFee[0].Denom, types.DefaultParams().DenomCreationFee[0].Amount.MulRaw(100)))
+	tokenCreationFeeAmt := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100_000_000)))
 	fundAccount(t, ctx, tokenz, creator, tokenCreationFeeAmt)
 
 	// Create denoms for valid mint tests
@@ -289,7 +288,7 @@ func TestBurn(t *testing.T) {
 	tokenz, ctx := SetupCustomApp(t, creator)
 
 	// Fund actor with 100 base denom creation fees
-	tokenCreationFeeAmt := sdk.NewCoins(sdk.NewCoin(types.DefaultParams().DenomCreationFee[0].Denom, types.DefaultParams().DenomCreationFee[0].Amount.MulRaw(100)))
+	tokenCreationFeeAmt := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100_000_000)))
 	fundAccount(t, ctx, tokenz, creator, tokenCreationFeeAmt)
 
 	// Create denoms for valid burn tests

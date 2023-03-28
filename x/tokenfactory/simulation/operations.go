@@ -361,21 +361,13 @@ func SimulateMsgCreateDenom(tfKeeper TokenfactoryKeeper, ak types.AccountKeeper,
 		// Get sims account
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
-		// Check if sims account enough create fee
-		createFee := tfKeeper.GetParams(ctx).DenomCreationFee
-		balances := bk.GetAllBalances(ctx, simAccount.Address)
-		_, hasNeg := balances.SafeSub(createFee)
-		if hasNeg {
-			return simtypes.NoOpMsg(types.ModuleName, types.MsgCreateDenom{}.Type(), "Creator not enough creation fee"), nil, nil
-		}
-
 		// Create msg create denom
 		msg := types.MsgCreateDenom{
 			Sender:   simAccount.Address.String(),
 			Subdenom: simtypes.RandStringOfLength(r, 10),
 		}
 
-		txCtx := BuildOperationInput(r, app, ctx, &msg, simAccount, ak, bk, createFee)
+		txCtx := BuildOperationInput(r, app, ctx, &msg, simAccount, ak, bk, nil)
 		return simulation.GenAndDeliverTxWithRandFees(txCtx)
 	}
 }

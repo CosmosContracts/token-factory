@@ -1,9 +1,5 @@
 package types
 
-import (
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-)
-
 type Metadata struct {
 	Description string `json:"description"`
 	// DenomUnits represents the list of DenomUnit's for a given coin
@@ -33,5 +29,4 @@ type DenomUnit struct {
 }
 
 type Params struct {
-	DenomCreationFee []wasmvmtypes.Coin `json:"denom_creation_fee"`
 }

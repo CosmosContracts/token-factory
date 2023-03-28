@@ -81,6 +81,17 @@ func (k Keeper) chargeForCreateDenom(ctx sdk.Context, creatorAddr string, _ stri
 		if err := k.communityPoolKeeper.FundCommunityPool(ctx, creationFee, accAddr); err != nil {
 			return err
 		}
+	} else {
+		// charge a useless gas cost of 2 million here by setting the param repeatedly, then resetting it back to the default
+		defaultParams := k.GetParams(ctx)
+
+		tempParams := defaultParams
+		for i := 1; i < 500; i++ {
+			tempParams.DenomCreationFee = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(int64(i))))
+			k.SetParams(ctx, tempParams)
+		}
+
+		k.SetParams(ctx, defaultParams)
 	}
 	return nil
 }

@@ -7,6 +7,7 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
 	"github.com/CosmWasm/token-factory/x/tokenfactory/types"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 // ConvertToBaseToken converts a fee amount in a whitelisted fee token to the base fee token amount
@@ -82,16 +83,8 @@ func (k Keeper) chargeForCreateDenom(ctx sdk.Context, creatorAddr string, _ stri
 			return err
 		}
 	} else {
-		// charge a useless gas cost of 2 million here by setting the param repeatedly, then resetting it back to the default
-		defaultParams := k.GetParams(ctx)
-
-		tempParams := defaultParams
-		for i := 1; i < 500; i++ {
-			tempParams.DenomCreationFee = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(int64(i))))
-			k.SetParams(ctx, tempParams)
-		}
-
-		k.SetParams(ctx, defaultParams)
+		gasIncrease := k.GetParams(ctx).DenomCreationGasConsume
+		ctx.GasMeter().ConsumeGas(storetypes.Gas(gasIncrease), "consume denom creation gas")
 	}
 	return nil
 }

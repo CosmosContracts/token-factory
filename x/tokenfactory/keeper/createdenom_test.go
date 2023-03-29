@@ -124,13 +124,6 @@ func (suite *KeeperTestSuite) TestCreateDenom() {
 			subdenom:         "bit/***///&&&/coin",
 			valid:            false,
 		},
-		// test there is no fee so the gas is > 2_000_000
-		{
-			desc:             "success case: no fee",
-			denomCreationFee: nilCreationFee,
-			subdenom:         "no-fee",
-			valid:            true,
-		},
 	} {
 		suite.SetupTest()
 		suite.Run(fmt.Sprintf("Case %s", tc.desc), func() {

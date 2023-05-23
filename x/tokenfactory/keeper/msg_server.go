@@ -93,6 +93,8 @@ func (server msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.
 
 	if msg.BurnFromAddress == "" {
 		msg.BurnFromAddress = msg.Sender
+	} else if !types.IsCapabilityEnabled(server.Keeper.enabledCapabilities, types.EnableBurnFrom) {
+		return nil, types.ErrCapabilityNotEnabled
 	}
 
 	err = server.Keeper.burnFrom(ctx, msg.Amount, msg.BurnFromAddress)
@@ -113,6 +115,10 @@ func (server msgServer) Burn(goCtx context.Context, msg *types.MsgBurn) (*types.
 
 func (server msgServer) ForceTransfer(goCtx context.Context, msg *types.MsgForceTransfer) (*types.MsgForceTransferResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if !types.IsCapabilityEnabled(server.Keeper.enabledCapabilities, types.EnableForceTransfer) {
+		return nil, types.ErrCapabilityNotEnabled
+	}
 
 	authorityMetadata, err := server.Keeper.GetAuthorityMetadata(ctx, msg.Amount.GetDenom())
 	if err != nil {
@@ -169,6 +175,10 @@ func (server msgServer) ChangeAdmin(goCtx context.Context, msg *types.MsgChangeA
 
 func (server msgServer) SetDenomMetadata(goCtx context.Context, msg *types.MsgSetDenomMetadata) (*types.MsgSetDenomMetadataResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if !types.IsCapabilityEnabled(server.Keeper.enabledCapabilities, types.EnableSetMetadata) {
+		return nil, types.ErrCapabilityNotEnabled
+	}
 
 	// Defense in depth validation of metadata
 	err := msg.Metadata.Validate()
